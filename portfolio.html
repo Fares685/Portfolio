@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Fares Saif | Portfolio Développeur & BTS SIO</title>
+  <meta name="description" content="Portfolio de Fares Saif, étudiant en BTS SIO SLAM. Développeur Web Fullstack (PHP, JS, SQL)." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <style>
+    /* --- 1. VARIABLES & RESET --- */
+    :root{
+      --bg-dark:#050505;
+      --bg-card:#0f0f11;
+      --border:#27272a;
+      --primary:#8b5cf6;
+      --text-main:#ffffff;
+      --text-muted:#a1a1aa;
+      --radius-lg:24px;
+      --radius-md:16px;
+      --font-heading:'Plus Jakarta Sans', sans-serif;
+      --font-body:'Outfit', sans-serif;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{
+      background:var(--bg-dark);
+      color:var(--text-main);
+      font-family:var(--font-body);
+      line-height:1.6;
+      overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:8px;}
+    ::-webkit-scrollbar-track{background:var(--bg-dark);}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+    ::-webkit-scrollbar-thumb:hover{background:var(--primary);}
+
+    /* --- 2. LOADER --- */
+    #loader{
+      position:fixed;inset:0;background:var(--bg-dark);z-index:9999;
+      display:flex;justify-content:center;align-items:center;flex-direction:column;
+      transition:opacity .5s ease, visibility .5s ease;
+    }
+    .spinner{
+      width:50px;height:50px;border:3px solid rgba(255,255,255,0.1);
+      border-radius:50%;border-top-color:var(--primary);
+      animation:spin 1s ease-in-out infinite;margin-bottom:20px;
+    }
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .loader-text{font-family:var(--font-heading);letter-spacing:2px;font-size:.9rem;opacity:.85;}
+
+    /* --- 3. UI COMPONENTS --- */
+    .container{max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:2;}
+
+    .section-title{
+      font-family:var(--font-heading);
+      font-size:clamp(2rem,4vw,3rem);
+      font-weight:800;
+      margin-bottom:40px;
+      background:linear-gradient(to right,#fff,#999);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      position:relative;
+      display:inline-block;
+    }
+    .section-title::after{
+      content:'';position:absolute;left:0;bottom:-10px;
+      width:60px;height:4px;background:var(--primary);border-radius:2px;
+    }
+
+    .btn{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:14px 28px;border-radius:12px;
+      font-weight:600;text-decoration:none;
+      transition:all .3s cubic-bezier(.25,.8,.25,1);
+      font-family:var(--font-heading);
+      border:1px solid transparent;
+    }
+    .btn-primary{
+      background:var(--primary);color:#fff;
+      box-shadow:0 4px 20px rgba(139,92,246,.3);
+    }
+    .btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(139,92,246,.5);}
+    .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text-main);}
+    .btn-outline:hover{border-color:#fff;background:rgba(255,255,255,.05);}
+
+    .badge{
+      font-size:.75rem;padding:4px 10px;border-radius:99px;
+      font-weight:600;letter-spacing:.3px;
+      display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .badge-purple{background:rgba(139,92,246,.15);color:#c4b5fd;border:1px solid rgba(139,92,246,.3);}
+    .badge-green{background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.3);}
+    .badge-gray{background:rgba(255,255,255,.06);color:#e5e7eb;border:1px solid rgba(255,255,255,.10);}
+
+    /* --- 4. HEADER & NAV --- */
+    header{position:fixed;top:0;width:100%;z-index:100;padding:20px 0;transition:all .3s;}
+    header.scrolled{
+      background:rgba(5,5,5,.85);
+      backdrop-filter:blur(12px);
+      padding:15px 0;border-bottom:1px solid rgba(255,255,255,.05);
+    }
+    nav{display:flex;justify-content:space-between;align-items:center;}
+    .logo{font-size:1.5rem;font-weight:700;font-family:var(--font-heading);color:#fff;text-decoration:none;}
+    .logo span{color:var(--primary);}
+    .nav-links{display:flex;gap:26px;flex-wrap:wrap;justify-content:flex-end;}
+    .nav-links a{
+      color:var(--text-muted);text-decoration:none;font-size:.95rem;font-weight:500;
+      transition:color .3s;position:relative;
+    }
+    .nav-links a:hover{color:#fff;}
+    .nav-links a::after{
+      content:'';position:absolute;bottom:-5px;left:0;width:0;height:2px;
+      background:var(--primary);transition:width .3s;
+    }
+    .nav-links a:hover::after{width:100%;}
+
+    /* --- 5. HERO --- */
+    .hero{min-height:100vh;display:flex;align-items:center;position:relative;padding-top:80px;overflow:hidden;}
+    .hero-bg{
+      position:absolute;width:600px;height:600px;
+      background:radial-gradient(circle, rgba(139,92,246,.15) 0%, rgba(5,5,5,0) 70%);
+      top:-10%;right:-10%;border-radius:50%;animation:floatBg 10s ease-in-out infinite;z-index:0;
+    }
+    .hero-bg-2{
+      position:absolute;width:400px;height:400px;
+      background:radial-gradient(circle, rgba(236,72,153,.10) 0%, rgba(5,5,5,0) 70%);
+      bottom:10%;left:-5%;border-radius:50%;animation:floatBg 15s ease-in-out infinite reverse;z-index:0;
+    }
+    @keyframes floatBg{0%,100%{transform:translate(0,0);}50%{transform:translate(-30px,50px);}}
+    .hero-content{max-width:680px;z-index:2;}
+    .hero-welcome{font-size:1.1rem;color:var(--primary);font-weight:600;margin-bottom:16px;display:block;}
+    .hero h1{
+      font-family:var(--font-heading);
+      font-size:clamp(2.5rem,6vw,4.5rem);
+      line-height:1.1;font-weight:800;margin-bottom:24px;
+    }
+    .type-writer{border-right:3px solid var(--primary);padding-right:5px;animation:blink .75s step-end infinite;}
+    @keyframes blink{50%{border-color:transparent;}}
+    .hero-desc{font-size:1.15rem;color:var(--text-muted);margin-bottom:32px;max-width:560px;}
+
+    /* --- 6. BENTO (ABOUT) --- */
+    .bento-section{padding:100px 0;}
+    .bento-grid{
+      display:grid;grid-template-columns:repeat(4,1fr);
+      grid-auto-rows:minmax(180px,auto);gap:20px;
+    }
+    .card{
+      background:var(--bg-card);border:1px solid var(--border);
+      border-radius:var(--radius-lg);padding:24px;position:relative;overflow:hidden;
+      transition:transform .1s, box-shadow .3s;display:flex;flex-direction:column;
+    }
+    .card:hover{border-color:#3f3f46;box-shadow:0 20px 40px -10px rgba(0,0,0,.5);}
+    .col-span-2{grid-column:span 2;}
+    .row-span-2{grid-row:span 2;}
+    .card h3{font-size:1.2rem;font-family:var(--font-heading);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+    .card p{color:var(--text-muted);font-size:.95rem;}
+    .lang-item{display:flex;justify-content:space-between;margin-bottom:8px;font-size:.9rem;}
+    .progress-bar{width:100%;height:6px;background:#27272a;border-radius:3px;overflow:hidden;margin-bottom:12px;}
+    .progress-fill{height:100%;background:var(--primary);border-radius:3px;}
+
+    /* --- 7. TIMELINE --- */
+    .timeline-section{padding:80px 0;}
+    .timeline{position:relative;max-width:800px;margin:0 auto;}
+    .timeline::before{
+      content:'';position:absolute;left:50%;transform:translateX(-50%);
+      width:2px;height:100%;background:var(--border);
+    }
+    .timeline-item{margin-bottom:60px;width:100%;position:relative;}
+    .timeline-content{
+      width:45%;background:var(--bg-card);padding:24px;border-radius:var(--radius-md);
+      border:1px solid var(--border);position:relative;transition:transform .3s;
+    }
+    .timeline-content:hover{transform:translateY(-5px);border-color:var(--primary);}
+    .timeline-item:nth-child(odd) .timeline-content{margin-left:auto;}
+    .timeline-item:nth-child(even) .timeline-content{margin-right:auto;}
+    .timeline-dot{
+      position:absolute;left:50%;top:24px;transform:translateX(-50%);
+      width:16px;height:16px;background:var(--bg-dark);
+      border:2px solid var(--primary);border-radius:50%;z-index:2;
+    }
+    .date{display:block;font-size:.85rem;color:var(--primary);font-weight:600;margin-bottom:8px;}
+
+    /* --- 8. PROJETS --- */
+    .projects-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(320px,1fr));gap:30px;}
+    .project-card{
+      background:var(--bg-card);border-radius:var(--radius-lg);overflow:hidden;
+      border:1px solid var(--border);transition:all .4s ease;
+    }
+    .project-card:hover{transform:translateY(-10px);border-color:var(--primary);}
+    .project-img{width:100%;height:200px;background:#222;display:flex;align-items:center;justify-content:center;}
+    .project-body{padding:24px;}
+    .tech-stack{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;}
+
+    .e4-box{
+      margin-top:14px;background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:16px;padding:14px;
+    }
+    .e4-box p{color:var(--text-muted);font-size:.9rem;margin-bottom:8px;}
+    .e4-box p:last-child{margin-bottom:0;}
+    .e4-box strong{color:#fff;font-weight:700;}
+
+    /* --- Images cliquables dans les cartes projets --- */
+    .project-img-link{
+      display:block;
+      width:100%;
+      height:200px;
+      overflow:hidden;
+      position:relative;
+    }
+    .project-img-link img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter: brightness(.85) contrast(1.05);
+      transform: scale(1.02);
+      transition: transform .4s ease, filter .4s ease;
+    }
+    .project-card:hover .project-img-link img{
+      transform: scale(1.08);
+      filter: brightness(1) contrast(1.1);
+    }
+    .project-img-link::after{
+      content:"Voir";
+      position:absolute;
+      right:14px;
+      top:14px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-family: var(--font-heading);
+      font-size:.8rem;
+      font-weight:700;
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(255,255,255,.15);
+      color:#fff;
+      backdrop-filter: blur(6px);
+    }
+
+    /* --- 9. CONTACT --- */
+    .contact-box{
+      background:linear-gradient(145deg,var(--bg-card),#131315);
+      border:1px solid var(--border);border-radius:var(--radius-lg);
+      padding:40px;text-align:center;max-width:700px;margin:0 auto;
+    }
+
+    /* --- 10. REVEAL --- */
+    .reveal{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.5,0,0,1);}
+    .reveal.active{opacity:1;transform:translateY(0);}
+    .delay-100{transition-delay:.1s;}
+    .delay-200{transition-delay:.2s;}
+    .delay-300{transition-delay:.3s;}
+
+    @media (max-width:768px){
+      .bento-grid{grid-template-columns:1fr;}
+      .col-span-2{grid-column:span 1;}
+      .timeline::before{left:20px;}
+      .timeline-content{width:calc(100% - 50px);margin-left:50px !important;}
+      .timeline-dot{left:20px;}
+      .hero h1{font-size:2.8rem;}
+    }
+  </style>
+</head>
+
+<body>
+  <div id="loader">
+    <div class="spinner"></div>
+    <div class="loader-text">INITIALISATION DU PORTFOLIO...</div>
+  </div>
+
+  <header id="header">
+    <div class="container">
+      <nav>
+        <a href="#" class="logo">Fares Saif<span>.</span></a>
+
+        <div class="nav-links">
+          <a href="#about">À propos</a>
+          <a href="#parcours">Parcours</a>
+          <a href="#bts">BTS SIO</a>
+          <a href="#competences">Compétences E4</a>
+          <a href="#projects">Projets</a>
+          <a href="#veille">Veille Techno</a>
+          <a href="#preuves">Preuves</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-bg-2"></div>
+
+      <div class="container hero-content">
+        <span class="hero-welcome reveal">Salut, je suis Fares Saif</span>
+        <h1 class="reveal delay-100">Je suis <span class="type-writer" id="typing-text"></span></h1>
+
+        <p class="hero-desc reveal delay-200">
+          Étudiant en BTS SIO (Option SLAM) à Rive-de-Gier.
+          Je conçois des applications web modernes, sécurisées et performantes.
+        </p>
+
+        <div class="reveal delay-300" style="display:flex; gap:16px; flex-wrap:wrap;">
+          <a href="#projects" class="btn btn-primary">Voir mes projets <i class="ph ph-arrow-right"></i></a>
+          <a href="https://github.com/Fares685/Journal-de-Bord" target="_blank" class="btn btn-outline">
+            Journal de Bord (Veille) <i class="ph ph-github-logo"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="bento-section container">
+      <h2 class="section-title reveal">Vue d'ensemble</h2>
+
+      <div class="bento-grid">
+        <div class="card col-span-2 row-span-2 reveal tilt-card">
+          <h3><i class="ph ph-user-circle" style="color:var(--primary);"></i> Qui suis-je ?</h3>
+          <p style="margin-top:10px; flex-grow:1;">
+            Passionné par l'informatique, j'ai choisi le <strong>BTS SIO SLAM</strong> pour transformer cette passion en métier.
+            J’aime résoudre des problèmes et créer des applications utiles et bien structurées.
+            <br><br>
+            Mon objectif : devenir développeur Fullstack confirmé.
+          </p>
+
+          <a
+            href="https://raw.githubusercontent.com/Fares685/CV_Fares_Saif/main/CV_2026-01-08_Fares_Saif.pdf"
+            class="btn btn-primary"
+            style="margin: 20px 0; width: fit-content;"
+            target="_blank"
+            rel="noopener"
+          >
+            <i class="ph ph-download-simple"></i>
+            Télécharger mon CV
+          </a>
+
+          <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
+            <span class="badge badge-purple">Permis B</span>
+            <span class="badge badge-purple">Véhicule Perso</span>
+            <span class="badge badge-purple">Loire (42)</span>
+          </div>
+        </div>
+
+        <div class="card reveal tilt-card delay-100">
+          <h3><i class="ph ph-brain"></i> Soft Skills</h3>
+          <ul style="list-style:none; margin-top:10px; color:var(--text-muted); font-size:0.9rem;">
+            <li style="margin-bottom:8px;">✅ Travail d'équipe</li>
+            <li style="margin-bottom:8px;">✅ Rigueur & Détail</li>
+            <li style="margin-bottom:8px;">✅ Adaptabilité</li>
+            <li>✅ Sens des responsabilités</li>
+          </ul>
+        </div>
+
+        <div class="card reveal tilt-card delay-200"
+          style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                 url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Lyon_Rhone_Alpes_France_01.jpg/640px-Lyon_Rhone_Alpes_France_01.jpg');
+                 background-size: cover;">
+          <div style="text-align:center; margin-top:auto;">
+            <i class="ph ph-map-pin" style="font-size:2rem; color:#fff;"></i>
+            <p style="color:#fff; font-weight:700;">Rive-de-Gier, France</p>
+          </div>
+        </div>
+
+        <div class="card col-span-2 reveal tilt-card delay-100">
+          <h3><i class="ph ph-translate"></i> Langues</h3>
+          <div style="margin-top:15px;">
+            <div class="lang-item"><span>Français (Maternel)</span><span>100%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%;"></div></div>
+
+            <div class="lang-item"><span>Arabe (Bilingue)</span><span>95%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:95%;"></div></div>
+
+            <div class="lang-item"><span>Anglais (A2)</span><span>40%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:40%;"></div></div>
+
+            <div class="lang-item"><span>Italien (A2)</span><span>40%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:40%;"></div></div>
+          </div>
+        </div>
+
+        <div class="card reveal tilt-card delay-200">
+          <h3><i class="ph ph-barbell"></i> Hobby</h3>
+          <p>Sport & Musculation.</p>
+          <p style="font-size:0.85rem; margin-top:8px;">La discipline sportive m'aide à rester régulier, rigoureux et constant.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PARCOURS -->
+    <section id="parcours" class="timeline-section container">
+      <h2 class="section-title reveal">Mon Parcours</h2>
+
+      <div class="timeline">
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <span class="date">Sept 2025 - Juin 2026 (En cours)</span>
+            <h3>BTS SIO Option SLAM</h3>
+            <p>Lycée Georges Brassens, Rive-de-Gier.</p>
+            <p style="font-size:0.9rem; margin-top:5px;">Spécialisation en Solutions Logicielles et Applications Métiers.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal delay-100">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <span class="date">Nov 2025 - Déc 2025</span>
+            <h3>Stage : Création Site Vitrine</h3>
+            <p>Entreprise HNMTP.</p>
+            <p style="font-size:0.9rem; margin-top:5px;">Développement web complet pour répondre au besoin de visibilité de l'entreprise.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal delay-100">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <span class="date">Mai 2025 - Juin 2025</span>
+            <h3>Stage : Développement Web</h3>
+            <p>Rizon Software, Lyon Part-Dieu.</p>
+            <p style="font-size:0.9rem; margin-top:5px;">Projet : Clone Netflix (Front & Back), architecture MVC, MySQL.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BTS -->
+    <section id="bts" class="container" style="padding:80px 0;">
+      <div style="background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 24px; padding: 40px;">
+        <h2 class="section-title reveal" style="margin-top:0;">Compétences BTS SIO</h2>
+        <p class="reveal" style="color: var(--text-muted); max-width: 740px; margin-bottom: 30px;">
+          Le BTS SIO valide des compétences autour du support, du développement et de la cybersécurité.
+          Mon portfolio met en avant mes projets, ma veille et mes preuves liées à l’épreuve E4.
+        </p>
+
+        <div class="projects-grid">
+          <div class="card reveal tilt-card">
+            <span class="badge badge-purple" style="width: fit-content; margin-bottom: 10px;">Bloc 1</span>
+            <h3>Support & Services</h3>
+            <p>Patrimoine informatique, réponse aux incidents, développement de la présence en ligne.</p>
+          </div>
+
+          <div class="card reveal tilt-card delay-100" style="border-color: var(--primary);">
+            <span class="badge badge-purple" style="width: fit-content; margin-bottom: 10px; background: var(--primary); color: white;">Bloc 2 (SLAM)</span>
+            <h3>Conception & Dév.</h3>
+            <p>Conception d’applications, maintenance corrective/évolutive, POO, MVC, données (SQL).</p>
+          </div>
+
+          <div class="card reveal tilt-card delay-200">
+            <span class="badge badge-purple" style="width: fit-content; margin-bottom: 10px;">Bloc 3</span>
+            <h3>Cybersécurité</h3>
+            <p>Bonnes pratiques, sécurisation des formulaires, gestion des accès, protection des données.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPETENCES E4 -->
+    <section id="competences" class="container" style="padding: 80px 0;">
+      <h2 class="section-title reveal">Compétences E4</h2>
+
+      <div class="projects-grid">
+        <div class="card reveal tilt-card">
+          <h3><i class="ph ph-hard-drives" style="color:var(--primary);"></i> C1 — Gérer le patrimoine</h3>
+          <p>Organisation du code, versions (Git), documentation, ressources, bonnes pratiques.</p>
+        </div>
+
+        <div class="card reveal tilt-card delay-100">
+          <h3><i class="ph ph-bug" style="color:var(--primary);"></i> C2 — Incidents & demandes</h3>
+          <p>Debug, corrections, améliorations, maintenance corrective et évolutive.</p>
+        </div>
+
+        <div class="card reveal tilt-card delay-200">
+          <h3><i class="ph ph-globe" style="color:var(--primary);"></i> C3 — Présence en ligne</h3>
+          <p>Sites web et applications : front/back, SEO, contenu, accessibilité.</p>
+        </div>
+
+        <div class="card reveal tilt-card">
+          <h3><i class="ph ph-kanban" style="color:var(--primary);"></i> C4 — Mode projet</h3>
+          <p>Planification, tâches, Kanban, organisation, travail en équipe.</p>
+        </div>
+
+        <div class="card reveal tilt-card delay-100">
+          <h3><i class="ph ph-rocket-launch" style="color:var(--primary);"></i> C5 — Service informatique</h3>
+          <p>Application utilisable, tests, déploiement (local/web), livraison et documentation.</p>
+        </div>
+
+        <div class="card reveal tilt-card delay-200">
+          <h3><i class="ph ph-graduation-cap" style="color:var(--primary);"></i> C6 — Développement pro</h3>
+          <p>Veille, auto-formation, portfolio, montée en compétences.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJETS -->
+    <section id="projects" class="container" style="padding: 80px 0;">
+      <h2 class="section-title reveal">Mes Projets</h2>
+
+      <div class="projects-grid">
+        <!-- PROJET 1 -->
+        <article class="project-card reveal">
+          <div class="project-img" style="background: linear-gradient(to bottom right, #222, #000);">
+            <span style="font-size: 2rem; font-weight: 800; color: #E50914;">NETFLUX</span>
+          </div>
+
+          <div class="project-body">
+            <h3>Plateforme de Streaming (MVC)</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 10px 0;">
+              Clone Netflix réalisé en stage. Back-office Admin + base de données.
+            </p>
+
+            <div class="tech-stack">
+              <span class="badge badge-purple">PHP</span>
+              <span class="badge badge-purple">MySQL</span>
+              <span class="badge badge-purple">MVC</span>
+              <span class="badge badge-gray">GitHub</span>
+            </div>
+
+            <div class="e4-box">
+              <p><strong>Contexte :</strong> Stage — besoin : plateforme de streaming (auth + catalogue).</p>
+              <p><strong>Missions :</strong> CRUD, intégration BDD, corrections bugs, sécurisation formulaires.</p>
+              <p><strong>Livrables :</strong> code source, script SQL, doc installation.</p>
+            </div>
+
+            <div class="tech-stack" style="margin-top: 12px;">
+              <span class="badge badge-purple">C3</span>
+              <span class="badge badge-purple">C5</span>
+              <span class="badge badge-purple">C2</span>
+              <span class="badge badge-purple">C4</span>
+            </div>
+
+            <div style="margin-top: 16px; display:flex; gap:10px; flex-wrap:wrap;">
+              <a href="https://github.com/Fares685" target="_blank" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.8rem;">
+                GitHub
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- PROJET 2 (HNMTP) -->
+        <article class="project-card reveal delay-100">
+          <!-- IMAGE CLIQUABLE (remplace l'icône bâtiment) -->
+          <a class="project-img-link"
+             href="https://fares685.github.io/Site-HNMTP/"
+             target="_blank"
+             rel="noopener">
+            <img
+              src="assets/images/projects/hnmtp.jpg"
+              alt="Site vitrine HNMTP"
+              onerror="this.src='https://pro.eldo.com/hubfs/featured-img/augmenter-visibilite-batiment.jpg';"
+            />
+          </a>
+
+          <div class="project-body">
+            <h3>Site Vitrine HNMTP (Pro)</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 10px 0;">
+              Site professionnel : analyse du besoin, développement, optimisation et mise en ligne.
+            </p>
+
+            <div class="tech-stack">
+              <span class="badge badge-green">Projet Pro</span>
+              <span class="badge badge-purple">HTML/CSS</span>
+              <span class="badge badge-purple">SEO</span>
+            </div>
+
+            <div class="e4-box">
+              <p><strong>Contexte :</strong> Stage — besoin visibilité en ligne pour entreprise de BTP.</p>
+              <p><strong>Missions :</strong> recueil besoins, création pages, retours/corrections client.</p>
+              <p><strong>Livrables :</strong> site final + dossier projet + captures.</p>
+            </div>
+
+            <div class="tech-stack" style="margin-top: 12px;">
+              <span class="badge badge-purple">C3</span>
+              <span class="badge badge-purple">C5</span>
+              <span class="badge badge-purple">C4</span>
+              <span class="badge badge-purple">C2</span>
+            </div>
+
+            <div style="margin-top: 16px; display:flex; gap:10px; flex-wrap:wrap;">
+              <a href="https://fares685.github.io/Site-HNMTP/" target="_blank" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.8rem;">
+                Ouvrir le site
+              </a>
+              <a href="https://github.com/Fares685/Site-HNMTP" target="_blank" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.8rem;">
+                Repo GitHub
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- PROJET 3 (WOODYCRAFT) -->
+        <article class="project-card reveal delay-200">
+          <!-- IMAGE CLIQUABLE (remplace l'icône feuille) -->
+          <a class="project-img-link"
+             href="https://github.com/Fares685/woodycraft"
+             target="_blank"
+             rel="noopener">
+            <img
+              src="assets/images/projects/woodycraft-puzzle.jpg"
+              alt="WoodyCraft - Projet puzzle"
+              onerror="this.src='https://data.puzzle.fr/jig-and-puz.185/jig-and-puz-80001-jig-puz-6-boites-de-tri.79727-1.700.jpg';"
+            />
+          </a>
+
+          <div class="project-body">
+            <h3>WoodyCraft (Laravel)</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 10px 0;">
+              Application web Laravel : routes, contrôleurs, BDD, vues, CRUD.
+            </p>
+
+            <div class="tech-stack">
+              <span class="badge badge-purple">Laravel</span>
+              <span class="badge badge-purple">PHP</span>
+              <span class="badge badge-purple">MySQL</span>
+              <span class="badge badge-gray">MVC</span>
+            </div>
+
+            <div class="e4-box">
+              <p><strong>Contexte :</strong> Projet SLAM — application web dynamique.</p>
+              <p><strong>Missions :</strong> CRUD, migrations, validation formulaires, organisation du code.</p>
+              <p><strong>Livrables :</strong> dépôt Git, export BDD, doc installation.</p>
+            </div>
+
+            <div class="tech-stack" style="margin-top: 12px;">
+              <span class="badge badge-purple">C1</span>
+              <span class="badge badge-purple">C3</span>
+              <span class="badge badge-purple">C4</span>
+              <span class="badge badge-purple">C5</span>
+            </div>
+
+            <div style="margin-top: 16px; display:flex; gap:10px; flex-wrap:wrap;">
+              <a href="https://github.com/Fares685/woodycraft" target="_blank" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.8rem;">
+                GitHub
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- VEILLE (3 exemples courts + lien GitHub complet) -->
+    <section id="veille" class="container" style="padding: 80px 0;">
+      <h2 class="section-title reveal">Veille Technologique</h2>
+
+      <p class="reveal" style="color: var(--text-muted); max-width: 850px; margin-bottom: 24px;">
+        Je réalise une veille autour de l’IA et de son impact sur le développement.
+        La version complète (toutes les entrées) est disponible dans mon Journal de Bord.
+      </p>
+
+      <div class="reveal" style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom: 26px;">
+        <a class="btn btn-primary" target="_blank" href="https://github.com/Fares685/Journal-de-Bord">
+          Journal de Bord (GitHub) <i class="ph ph-github-logo"></i>
+        </a>
+        <span class="badge badge-purple">Compétence E4 : C6</span>
+      </div>
+
+      <div class="projects-grid">
+        <div class="card reveal tilt-card">
+          <h3><i class="ph ph-globe" style="color:var(--primary);"></i> 11 février 2025 — IA open source</h3>
+          <p style="margin-top:10px;">
+            L’IA open source est présentée comme un levier d’accès mondial (transparence, collaboration),
+            mais avec des limites (données/algorithmes pas toujours ouverts).
+          </p>
+          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <a class="btn btn-outline" style="padding:10px 16px; font-size:.85rem;"
+               target="_blank" href="https://www.notretemps.com/depeches/l-ia-generative-open-source-au-coeur-des-enjeux-du-sommet-pour-l-ia-108281">
+              Source
+            </a>
+            <span class="badge badge-purple">C6</span>
+          </div>
+        </div>
+
+        <div class="card reveal tilt-card delay-100">
+          <h3><i class="ph ph-video" style="color:var(--primary);"></i> 16 février 2025 — Fake trailers IA</h3>
+          <p style="margin-top:10px;">
+            Les “fake trailers” (IA ou montage) posent un problème de désinformation et de perte de créativité,
+            uniquement pour générer des vues.
+          </p>
+          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <a class="btn btn-outline" style="padding:10px 16px; font-size:.85rem;"
+               target="_blank" href="https://www.jeuxvideo.com/news/1970018/les-fake-trailers-crees-ou-non-avec-l-ia-me-rendent-fou-tout-ca-pour-gratter-des-millions-de-vues.htm">
+              Source
+            </a>
+            <span class="badge badge-purple">C6</span>
+          </div>
+        </div>
+
+        <div class="card reveal tilt-card delay-200">
+          <h3><i class="ph ph-game-controller" style="color:var(--primary);"></i> 22 février 2025 — Muse (Xbox/Microsoft)</h3>
+          <p style="margin-top:10px;">
+            Muse vise à accélérer le prototypage et la préservation des jeux,
+            tout en soulevant des questions sur la créativité et la place de l’humain.
+          </p>
+          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <a class="btn btn-outline" style="padding:10px 16px; font-size:.85rem;"
+               target="_blank" href="https://www.rtbf.be/article/qu-est-ce-que-muse-la-nouvelle-ia-generative-presentee-par-xbox-et-microsoft-11507077">
+              Source
+            </a>
+            <span class="badge badge-purple">C6</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PREUVES -->
+    <section id="preuves" class="container" style="padding: 80px 0;">
+      <h2 class="section-title reveal">Documents & Preuves</h2>
+
+      <p class="reveal" style="color: var(--text-muted); max-width: 850px; margin-bottom: 24px;">
+        Exemples de preuves pour l’oral E4 : dépôts GitHub, captures d’écran, scripts SQL, documentation d’installation,
+        organisation (Kanban), etc.
+      </p>
+
+      <div class="projects-grid">
+        <div class="card reveal tilt-card">
+          <h3><i class="ph ph-git-branch" style="color:var(--primary);"></i> GitHub</h3>
+          <p style="margin-top:10px;">Dépôts de projets, commits, organisation du code.</p>
+          <div style="margin-top: 14px;">
+            <a class="btn btn-outline" style="padding:10px 16px; font-size:0.85rem;" href="https://github.com/Fares685" target="_blank">
+              Ouvrir GitHub
+            </a>
+          </div>
+        </div>
+
+        <div class="card reveal tilt-card delay-100">
+          <h3><i class="ph ph-file-doc" style="color:var(--primary);"></i> Docs / Installation</h3>
+          <p style="margin-top:10px;">README, procédures XAMPP/Laravel, notices et captures.</p>
+          <div style="margin-top: 14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <span class="badge badge-gray">README.md</span>
+            <span class="badge badge-gray">PDF</span>
+            <span class="badge badge-gray">Captures</span>
+          </div>
+        </div>
+
+        <div class="card reveal tilt-card delay-200">
+          <h3><i class="ph ph-database" style="color:var(--primary);"></i> Base de données</h3>
+          <p style="margin-top:10px;">Exports SQL, schémas, MCD/MLD si dispo, scripts de création.</p>
+          <div style="margin-top: 14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <span class="badge badge-gray">SQL</span>
+            <span class="badge badge-gray">MCD</span>
+            <span class="badge badge-gray">MLD</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" style="padding: 100px 0;">
+      <div class="container contact-box reveal">
+        <h2 style="font-size: 2rem; margin-bottom: 16px;">Me contacter</h2>
+        <p style="color: var(--text-muted); margin-bottom: 30px;">
+          Je suis actuellement à la recherche d'une alternance ou de nouveaux défis techniques.
+        </p>
+
+        <div style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap;">
+          <a href="mailto:faressaif689@gmail.com" class="btn btn-primary">
+            <i class="ph ph-envelope"></i> faressaif689@gmail.com
+          </a>
+          <a href="tel:+33768741730" class="btn btn-outline">
+            <i class="ph ph-phone"></i> 07 68 74 17 30
+          </a>
+        </div>
+
+        <div style="margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.9rem; color: var(--text-muted);">
+          © 2026 Fares Saif. Développé à la main.
+          <a href="https://github.com/Fares685" target="_blank" style="color:white;">Mon GitHub</a>.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // 1) LOADER
+    window.addEventListener('load', () => {
+      const loader = document.getElementById('loader');
+      setTimeout(() => {
+        loader.style.opacity = '0';
+        loader.style.visibility = 'hidden';
+      }, 800);
+    });
+
+    // 2) TYPING EFFECT
+    const textElement = document.getElementById('typing-text');
+    const phrases = ["Développeur Web.", "Étudiant BTS SIO.", "Passionné par l'IA."];
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function type() {
+      const current = phrases[phraseIndex];
+      if (isDeleting) {
+        textElement.textContent = current.substring(0, charIndex - 1);
+        charIndex--;
+      } else {
+        textElement.textContent = current.substring(0, charIndex + 1);
+        charIndex++;
+      }
+
+      if (!isDeleting && charIndex === current.length) {
+        isDeleting = true;
+        setTimeout(type, 2000);
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        setTimeout(type, 500);
+      } else {
+        setTimeout(type, isDeleting ? 50 : 100);
+      }
+    }
+    document.addEventListener('DOMContentLoaded', type);
+
+    // 3) SCROLL REVEAL
+    const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('active');
+      });
+    }, observerOptions);
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // 4) NAVBAR SCROLL EFFECT
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('header');
+      if (window.scrollY > 50) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    });
+
+    // 5) 3D TILT EFFECT
+    document.querySelectorAll('.tilt-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const cx = rect.width / 2;
+        const cy = rect.height / 2;
+        const rotateX = ((y - cy) / cy) * -5;
+        const rotateY = ((x - cx) / cx) * 5;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+      });
+    });
+  </script>
+</body>
+</html>
